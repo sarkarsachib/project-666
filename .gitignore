@@ -1,0 +1,137 @@
+# Project 666 - Gitignore
+
+# Build artifacts
+/build/
+/dist/
+/target/
+/out/
+*.o
+*.so
+*.dylib
+*.dll
+*.exe
+*.a
+
+# Dependencies
+/node_modules/
+/vendor/
+/deps/
+/.cargo/
+/venv/
+/.venv/
+__pycache__/
+*.egg-info/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Test artifacts
+/coverage/
+*.log
+*.test
+test-results/
+.pytest_cache/
+.tox/
+
+# Secrets and keys
+*.key
+*.pem
+*.p12
+*.pfx
+ai_key
+secret_*
+.env
+.env.local
+
+# Runtime data
+*.pid
+*.seed
+*.socket
+/var/
+/tmp/
+/data/
+/logs/
+
+# Documentation build artifacts
+/docs/_build/
+/docs/.doctrees/
+*.pdf
+*.epub
+
+# OS-specific
+Thumbs.db
+desktop.ini
+
+# Language-specific
+
+## Rust
+Cargo.lock
+/target/
+
+## Go
+go.sum
+/bin/
+/pkg/
+
+## Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+## JavaScript/TypeScript
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+## Java
+*.class
+*.jar
+*.war
+/target/
+.gradle/
+/build/
+
+## C/C++
+*.o
+*.obj
+*.out
+*.elf
+*.so
+*.a
+*.lib
+*.exe
+*.dll
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
+*.rej
+.#*
+\#*#
+
+# Benchmark results
+bench_results/
+*.bench
+
+# Generated code (if applicable in future)
+/generated/
+*_generated.*
+
+# Future: Implementation artifacts
+/implementations/*/build/
+/implementations/*/target/
+/implementations/*/dist/
+
+# Future: Test vectors (keep in version control, but allow local overrides)
+/test_vectors/local/
