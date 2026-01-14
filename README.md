@@ -1,93 +1,435 @@
-# Project 666
+# Project 666: Privacy-Preserving Capability-Based Protocol
 
+**Version:** 1.0.0  
+**Status:** Phase 0 - Master Protocol Specification  
+**Last Updated:** 2024-01-14
 
+---
 
-## Getting started
+## Overview
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Project 666 is a privacy-preserving, capability-based communication protocol that combines:
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- **Onion Routing** (Tor-style) for sender/receiver anonymity
+- **Object Capabilities** (E language-style) for fine-grained access control
+- **Distributed Hash Table** (Kademlia-style) for decentralized service discovery
+- **End-to-End Encryption** (modern cryptography) for confidentiality and integrity
 
-## Add your files
+**Core Innovation:** `.666` opaque addresses that enable secure, anonymous service invocation without revealing identity or location.
 
-* [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+---
+
+## Project Structure
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/nr-labs/project-666.git
-git branch -M main
-git push -uf origin main
+project-666/
+├── docs/                          # Complete protocol specifications
+│   ├── PROTOCOL_SPEC.md           # Master overview
+│   ├── CRYPTO_SPEC.md             # Cryptographic operations
+│   ├── MESSAGE_FORMAT.md          # Binary wire formats
+│   ├── DATA_STRUCTURES.md         # Implementation-agnostic data structures
+│   ├── SYSTEM_DESCRIPTOR.md       # Service descriptor schema
+│   ├── CAPABILITY_MODEL.md        # Capability token specification
+│   ├── ROUTING_SPEC.md            # Onion routing and circuits
+│   ├── DHT_SPEC.md                # Distributed hash table
+│   ├── SECURITY_MODEL.md          # Formal security analysis
+│   └── AI_INTEGRATION.md          # AI orchestration interface
+└── README.md                      # This file
 ```
 
-## Integrate with your tools
+---
 
-* [Set up project integrations](https://gitlab.com/nr-labs/project-666/-/settings/integrations)
+## Key Concepts
 
-## Collaborate with your team
+### 1. .666 Addresses
 
-* [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+Opaque 32-byte identifiers derived from identity public keys:
 
-## Test and Deploy
+```
+Address = SHA-256(IdentityPublicKey || "666:service:v1")
+```
 
-Use the built-in continuous integration in GitLab.
+**Properties:**
+- Globally unique (256-bit space)
+- Location-independent (address ≠ network location)
+- Self-certifying (cryptographically verifiable)
+- Human-readable (Base32 encoding)
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+**Example:** `7MZUWAU2FJVXQ2KQN5DXA5I4PA4WCLV7GMYDENBWGA3DOOJGQ7LA`
 
-***
+### 2. Onion Routing
 
-# Editing this README
+3-hop circuits for anonymity:
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+```
+Client → Guard → Middle → Exit → Service
+```
 
-## Suggestions for a good README
+**Guarantees:**
+- Sender anonymity (service doesn't know client)
+- Receiver anonymity (intermediaries don't know destination)
+- Forward secrecy (ephemeral keys per circuit)
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+### 3. Capability Tokens
 
-## Name
-Choose a self-explaining name for your project.
+Unforgeable bearer credentials that grant authority:
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+```json
+{
+  "issuer": "ISSUER_ADDRESS",
+  "holder": "HOLDER_PUBKEY",
+  "permissions": {
+    "service": "SERVICE_ADDRESS",
+    "operations": ["read", "write"],
+    "resources": ["/data/*"]
+  },
+  "expires_at": 1735916000000,
+  "signature": "..."
+}
+```
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+**Properties:**
+- Unforgeable (Ed25519 signatures)
+- Delegable (create derived tokens with reduced permissions)
+- Revocable (issuer can invalidate at any time)
+- Auditable (all uses logged)
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+### 4. Distributed Hash Table
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Kademlia-inspired DHT for service discovery:
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+- **k = 20** replication for availability
+- **XOR distance** metric for routing
+- **O(log N)** lookup complexity
+- **End-to-end encryption** (DHT nodes cannot read stored data)
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+### 5. System Descriptors
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+Machine-readable service specifications:
+
+```json
+{
+  "service": {
+    "address": "7MZUWAU2...",
+    "description": "Distributed key-value store"
+  },
+  "capabilities": {
+    "required": [{"operations": ["read", "write"]}]
+  },
+  "interface": {
+    "invocation_schema": {...},
+    "result_schema": {...}
+  },
+  "limits": {
+    "max_invocation_size": 65536,
+    "timeout_ms": 5000
+  }
+}
+```
+
+---
+
+## Security Properties
+
+### Anonymity
+
+- **Sender Unlinkability:** Observer cannot identify sender (99% confidence)
+- **Receiver Unlinkability:** Observer cannot identify service (99% confidence)
+- **Request Unlinkability:** Observer cannot correlate multiple requests (with circuit rotation)
+
+**Threat Model:** Global passive adversary controlling up to 20% of relays.
+
+### Cryptography
+
+- **ChaCha20-Poly1305:** Symmetric AEAD encryption (IND-CCA2 secure)
+- **Ed25519:** Digital signatures (128-bit security, EUF-CMA)
+- **X25519:** Elliptic-curve Diffie-Hellman (128-bit security)
+- **SHA-256:** Collision-resistant hashing (256-bit security)
+- **Argon2id:** Password-based key derivation (memory-hard)
+
+### Capability Security
+
+- **Unforgeability:** Cannot create fake capability tokens (Ed25519 security)
+- **Revocation:** Propagates within 30 seconds (eventual consistency)
+- **Attenuation:** Derived capabilities have equal or fewer permissions
+- **Auditability:** All capability uses logged with tamper-evident trail
+
+---
+
+## Implementation Phases
+
+### Phase 0: Master Protocol Specification ✅ (Current)
+
+**Status:** Complete
+
+**Deliverables:**
+- [x] 10 detailed specification documents
+- [x] Cryptographic test vectors
+- [x] Binary message formats
+- [x] Security analysis
+- [x] AI integration interface
+
+**Next:** Phase 1 - Reference Implementation (Language TBD)
+
+### Phase 1: Reference Implementation (Future)
+
+**Language:** To be determined (candidates: Rust, Go, Zig)
+
+**Deliverables:**
+- Reference implementation following specifications
+- Cross-language test vectors
+- Performance benchmarks
+- Security audits
+
+### Phase 2: Multi-Language Implementations (Future)
+
+**Target:** 17 languages (including C, C++, Python, JavaScript, Rust, Go, Java, etc.)
+
+**Goal:** Every implementation passes same test vectors and interoperates.
+
+---
+
+## Quick Start (Future)
+
+**Note:** Implementation not yet available. Phase 0 (specification) is complete.
+
+**Future usage example:**
+
+```python
+from project666 import Client, Capability
+
+# Initialize client
+client = Client()
+
+# Receive capability token from issuer
+capability = Capability.from_hex("...")
+
+# Invoke service
+service_address = "7MZUWAU2FJVXQ2KQN5DXA5I4PA4WCLV7..."
+result = client.invoke(
+    service=service_address,
+    capability=capability,
+    payload={"operation": "read", "key": "example_key"}
+)
+
+print(result)  # {"status": "success", "data": "example_value"}
+```
+
+---
+
+## Documentation
+
+All specifications are in the `docs/` directory:
+
+1. **[PROTOCOL_SPEC.md](docs/PROTOCOL_SPEC.md)** - Start here for overview
+   - Addressing model
+   - Message types
+   - State machines
+   - Error codes
+
+2. **[CRYPTO_SPEC.md](docs/CRYPTO_SPEC.md)** - Cryptographic operations
+   - ChaCha20-Poly1305, Ed25519, X25519
+   - Test vectors with exact hex values
+   - Key derivation and management
+
+3. **[MESSAGE_FORMAT.md](docs/MESSAGE_FORMAT.md)** - Wire formats
+   - Byte-level message layouts
+   - Every field with exact offsets
+   - Binary serialization examples
+
+4. **[DATA_STRUCTURES.md](docs/DATA_STRUCTURES.md)** - Core data structures
+   - Hash tables, Merkle trees, queues
+   - Routing tables, connection pools
+   - Language-agnostic pseudocode
+
+5. **[SYSTEM_DESCRIPTOR.md](docs/SYSTEM_DESCRIPTOR.md)** - Service descriptors
+   - JSON schema definition
+   - Validation rules
+   - Example descriptors
+
+6. **[CAPABILITY_MODEL.md](docs/CAPABILITY_MODEL.md)** - Capability tokens
+   - Token structure and binary format
+   - Issuance, verification, delegation, revocation
+   - Permission algebra
+
+7. **[ROUTING_SPEC.md](docs/ROUTING_SPEC.md)** - Onion routing
+   - Circuit construction algorithm
+   - Onion encryption/decryption
+   - Path selection strategies
+
+8. **[DHT_SPEC.md](docs/DHT_SPEC.md)** - Distributed hash table
+   - Kademlia-inspired design
+   - PING, FIND_NODE, STORE, FIND_VALUE operations
+   - Bootstrap and replication
+
+9. **[SECURITY_MODEL.md](docs/SECURITY_MODEL.md)** - Security analysis
+   - Threat model and adversary capabilities
+   - Formal security proofs
+   - Attack resistance analysis
+
+10. **[AI_INTEGRATION.md](docs/AI_INTEGRATION.md)** - AI orchestration
+    - State inspection API
+    - Action triggering
+    - Metrics export and event stream
+
+---
+
+## Design Principles
+
+1. **Privacy by Default:** All communication encrypted and anonymized
+2. **Zero Trust:** Every message authenticated, no implicit permissions
+3. **Capability-Based:** Possession of token is authority to act
+4. **Language Agnostic:** Specifications implementable in any language
+5. **AI Orchestrable:** Complete observability and control for AI systems
+6. **Formal Specification:** No ambiguity, complete coverage, testable
+
+---
+
+## Compliance
+
+An implementation is **compliant** with this specification if:
+
+- ✅ All message types implemented per [MESSAGE_FORMAT.md](docs/MESSAGE_FORMAT.md)
+- ✅ Cryptographic operations match test vectors in [CRYPTO_SPEC.md](docs/CRYPTO_SPEC.md)
+- ✅ Circuits have minimum 3 hops and maximum 8 hops
+- ✅ Capability enforcement is mandatory (no bypass)
+- ✅ Protocol version is 1.0 in header
+- ✅ Error codes match specified values
+- ✅ State machine transitions follow defined rules
+- ✅ All keys are erased after use (forward secrecy)
+- ✅ DHT operations follow [DHT_SPEC.md](docs/DHT_SPEC.md)
+- ✅ AI integration API follows [AI_INTEGRATION.md](docs/AI_INTEGRATION.md)
+
+---
 
 ## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+**Phase 0 (Specification):** Complete
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+**Phase 1 (Implementation):** Not yet started
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+**Future contributions:**
+- Reference implementation
+- Language bindings
+- Security audits
+- Performance optimizations
+- Documentation improvements
+
+---
 
 ## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+**To Be Determined**
+
+Considerations:
+- Open source license (MIT, Apache 2.0, or GPLv3?)
+- Patent grants
+- Trademark usage
+- Specification copyright
+
+---
+
+## Security Disclosure
+
+**For security vulnerabilities in specifications:**
+
+Email: security@project666.example (placeholder)
+
+**PGP Key:** (to be published)
+
+**Response Time:** 48 hours
+
+---
+
+## Roadmap
+
+### 2024 Q1: Phase 0 ✅
+- [x] Complete protocol specifications
+- [x] Cryptographic design
+- [x] Security analysis
+
+### 2024 Q2-Q3: Phase 1 (Planned)
+- [ ] Reference implementation
+- [ ] Test suite with cross-language vectors
+- [ ] Security audit
+
+### 2024 Q4: Phase 2 (Planned)
+- [ ] Multi-language implementations (3-5 languages)
+- [ ] Interoperability testing
+- [ ] Public beta
+
+### 2025: Production
+- [ ] Remaining language implementations (total 17)
+- [ ] Production hardening
+- [ ] Public launch
+
+---
+
+## Contact
+
+**Project Lead:** (To be determined)  
+**Email:** contact@project666.example (placeholder)  
+**Website:** https://project666.example (placeholder)  
+**Discord:** (To be created)  
+**Matrix:** (To be created)
+
+---
+
+## Acknowledgments
+
+**Inspirations:**
+- **Tor Project:** Onion routing design
+- **E Language:** Object-capability security model
+- **Kademlia:** Distributed hash table
+- **libsodium:** Modern cryptography library design
+- **WireGuard:** Clean protocol specification
+
+**Thanks to:** (To be added as project develops)
+
+---
+
+## Frequently Asked Questions
+
+### What is Project 666?
+
+A privacy-preserving communication protocol that enables secure, anonymous service invocation using capability-based security and onion routing.
+
+### Why ".666" addresses?
+
+The "666" is an arbitrary project identifier. The `.666` addresses are opaque 256-bit identifiers (like IPv6 addresses but with cryptographic properties).
+
+### Is this related to cryptocurrency?
+
+No. Project 666 is a communication protocol, not a blockchain or cryptocurrency. There are no tokens, mining, or consensus mechanisms.
+
+### How is this different from Tor?
+
+Project 666 builds on Tor's onion routing but adds:
+- Capability-based access control
+- Service discovery via DHT
+- Machine-readable service descriptors
+- AI orchestration layer
+
+### When will implementations be available?
+
+Phase 0 (specification) is complete. Phase 1 (reference implementation) planned for Q2-Q3 2024.
+
+### Can I implement this in my favorite language?
+
+Yes! The specifications are language-agnostic. Once the reference implementation and test vectors are available (Phase 1), anyone can create conforming implementations.
+
+### Is this production-ready?
+
+No. This is Phase 0 (specification only). Do not use in production until Phase 2 (audited implementations) is complete.
+
+### How can I contribute?
+
+Wait for Phase 1 (reference implementation) to begin. Contributions will be accepted for:
+- Language implementations
+- Security audits
+- Documentation
+- Test cases
+
+---
+
+**End of README**
