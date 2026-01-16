@@ -1,0 +1,41 @@
+[package]
+name = "project_666"
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.70"
+authors = ["Project 666 Team"]
+description = "Project 666 Cryptographic Primitives - Reference Implementation"
+license = "MIT"
+repository = "https://gitlab.com/nr-labs/project-666"
+readme = "README.md"
+keywords = ["cryptography", "privacy", "chaos", "onion-routing", "e2e-encryption"]
+categories = ["cryptography", "no-std"]
+
+[lib]
+name = "project_666"
+path = "src/lib.rs"
+
+[features]
+default = ["std"]
+std = []
+no_std = []
+
+[dev-dependencies]
+criterion = "0.5"
+hex = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+
+[[bench]]
+name = "crypto_bench"
+harness = false
+required-features = []
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
