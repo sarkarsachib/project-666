@@ -1,63 +1,29 @@
-//! # Project 666 Cryptographic Primitives
+//! # Project 666 - Reference Implementation
 //!
-//! This library provides a complete implementation of all cryptographic primitives
-//! required for the Project 666 privacy-preserving communication protocol.
-//!
-//! ## Features
-//!
-//! - **Zero dependencies**: All algorithms implemented from scratch
-//! - **Constant-time**: All operations where applicable are constant-time
-//! - **RFC compliant**: Implements RFC 7539, RFC 7748, RFC 8032, and more
-//! - **Well-tested**: Comprehensive test vectors and edge case coverage
-//!
-//! ## Modules
-//!
-//! - `aead`: ChaCha20-Poly1305 authenticated encryption
-//! - `argon2`: Argon2 key derivation function
-//! - `chacha20`: ChaCha20 stream cipher
-//! - `ed25519`: Ed25519 digital signatures
-//! - `kdf`: Key derivation functions
-//! - `poly1305`: Poly1305 message authentication code
-//! - `sha256`: SHA-256 hash function
-//! - `x25519`: X25519 elliptic curve Diffie-Hellman
-//! - `utils`: Constant-time utilities
-//!
-//! ## Example
-//!
-//! ```rust
-//! use project_666::aead;
-//!
-//! let key = [0u8; 32];
-//! let nonce = [0u8; 12];
-//! let plaintext = b"Hello, Project 666!";
-//!
-//! let (ciphertext, tag) = aead::encrypt(&key, &nonce, &[], plaintext);
-//! let decrypted = aead::decrypt(&key, &nonce, &[], &ciphertext, &tag).unwrap();
-//!
-//! assert_eq!(plaintext.as_slice(), &decrypted[..]);
-//! ```
+//! This crate started as a complete from-scratch implementation of the Phase 1
+//! cryptographic primitives. It now also includes Phase 4 DHT + distributed
+//! resolution building blocks.
 
 pub mod constants;
-
-// Re-export crypto modules
-pub mod aead;
-pub mod argon2;
-pub mod chacha20;
-pub mod ed25519;
-pub mod kdf;
-pub mod poly1305;
-pub mod sha256;
-pub mod x25519;
-pub mod utils;
-
-// Re-export commonly used types
-pub use aead::{AeadCipher, AeadError};
-pub use argon2::{Argon2, Argon2Params, Argon2Variant};
-pub use chacha20::ChaCha20;
-pub use ed25519::{PublicKey as Ed25519PublicKey, SecretKey as Ed25519SecretKey, Signature};
-pub use kdf::{derive_key, derive_keys, derive_keys_with_contexts};
-pub use poly1305::Poly1305;
-pub use sha256::Sha256;
-pub use x25519::{diffie_hellman, generate_keypair as x25519_generate_keypair};
+pub mod crypto;
+pub mod dht;
+pub mod resolution;
+pub mod types;
 
 pub use constants::*;
+
+// Re-export crypto modules at the crate root for the existing API.
+pub use crypto::{aead, argon2, chacha20, ed25519, kdf, poly1305, sha256, utils, x25519};
+
+// Re-export commonly used crypto types.
+pub use crypto::aead::{AeadCipher, AeadError};
+pub use crypto::argon2::{Argon2, Argon2Params, Argon2Variant};
+pub use crypto::chacha20::ChaCha20;
+pub use crypto::ed25519::{PublicKey as Ed25519PublicKey, SecretKey as Ed25519SecretKey, Signature};
+pub use crypto::kdf::{derive_key, derive_keys, derive_keys_with_contexts};
+pub use crypto::poly1305::Poly1305;
+pub use crypto::sha256::Sha256;
+pub use crypto::x25519::{diffie_hellman, generate_keypair as x25519_generate_keypair};
+
+// Re-export commonly used protocol types.
+pub use types::{Address, Permission, ResourceLimits, SystemDescriptor};

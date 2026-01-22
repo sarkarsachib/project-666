@@ -156,3 +156,22 @@ pub const MSG_TYPE_DESTROY: u8 = 0x06;
 
 /// Capability token message type
 pub const MSG_TYPE_CAPABILITY: u8 = 0x07;
+
+// DHT opcodes (Phase 4)
+
+/// Opcode 20: DHT ping
+pub const OPCODE_DHT_PING: u8 = 20;
+/// Opcode 21: DHT find node
+pub const OPCODE_DHT_FIND_NODE: u8 = 21;
+/// Opcode 22: DHT find node reply
+pub const OPCODE_DHT_FIND_NODE_REPLY: u8 = 22;
+/// Opcode 23: DHT store
+pub const OPCODE_DHT_STORE: u8 = 23;
+/// Opcode 24: DHT store reply
+pub const OPCODE_DHT_STORE_REPLY: u8 = 24;
+/// Opcode 25: DHT gossip
+pub const OPCODE_DHT_GOSSIP: u8 = 25;
+/// Opcode 26: DHT bootstrap
+pub const OPCODE_DHT_BOOTSTRAP: u8 = 26;
+/// Opcode 27: DHT error
+pub const OPCODE_DHT_ERROR: u8 = 27;

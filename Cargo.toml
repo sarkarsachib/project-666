@@ -36,6 +36,11 @@ name = "crypto_bench"
 harness = false
 required-features = []
 
+[[bench]]
+name = "dht_bench"
+harness = false
+required-features = []
+
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
