@@ -156,3 +156,38 @@ pub const MSG_TYPE_DESTROY: u8 = 0x06;
 
 /// Capability token message type
 pub const MSG_TYPE_CAPABILITY: u8 = 0x07;
+
+// Network transport constants
+
+/// Packet header size in bytes
+pub const PACKET_HEADER_SIZE: usize = 32;
+
+/// Maximum UDP packet size (64 KB - standard UDP limit)
+pub const MAX_PACKET_SIZE: usize = 65536;
+
+/// Default receive timeout in milliseconds
+pub const DEFAULT_RECV_TIMEOUT_MS: u64 = 1000;
+
+/// Default send timeout in milliseconds
+pub const DEFAULT_SEND_TIMEOUT_MS: u64 = 1000;
+
+/// Maximum number of circuits per node
+pub const MAX_CIRCUITS: usize = 10000;
+
+/// Circuit idle timeout in seconds (1 hour)
+pub const CIRCUIT_IDLE_TIMEOUT_SECS: u64 = 3600;
+
+/// Connection idle timeout in seconds (5 minutes)
+pub const CONNECTION_IDLE_TIMEOUT_SECS: u64 = 300;
+
+/// Peer stale threshold in seconds (1 hour)
+pub const PEER_STALE_THRESHOLD_SECS: u64 = 3600;
+
+/// Minimum peer reputation for reliability
+pub const MIN_PEER_REPUTATION: i32 = 5;
+
+/// Packet reliability timeout in milliseconds
+pub const PACKET_RELIABILITY_TIMEOUT_MS: u64 = 5000;
+
+/// Maximum packet retries
+pub const MAX_PACKET_RETRIES: u32 = 3;
